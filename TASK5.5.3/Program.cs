@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,12 +21,13 @@ namespace TASK5._5._3
 
         static void Echo (string something, int depth)
         {
-            Console.WriteLine(something);
+            Console.WriteLine("... "+something);
             if (depth > 0)
             {
                 if (something.Length > 2)
                 {
                     var modsomething = something.Remove(0, 2);
+                    Console.BackgroundColor = (ConsoleColor)depth;                     
                     Echo(modsomething, depth - 1);
                 }
             }
