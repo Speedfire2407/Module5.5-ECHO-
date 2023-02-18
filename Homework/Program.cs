@@ -7,30 +7,24 @@ using System.Threading.Tasks;
 namespace Homework
 {
     internal class Program
+
     {
+        /// <summary>
+        /// Метод возвращающий кортеж
+        /// </summary>
+        /// <returns></returns>
         static (string, string, byte , bool, byte, byte, string[], string[]) TellAboutYourself()
         {
             Console.Write("Введите ваше имя: ");
-            string name = Console.ReadLine();
+            string name = HaveaNumber();
             Console.Write("Введите вашу фамилию: ");
-            string surname = Console.ReadLine();
+            string surname = HaveaNumber();
             Console.Write("Введите ваш возраст ");
-            byte age = byte.Parse(Console.ReadLine());
-            while (CorrectNumber(age) == false) 
-            {
-                age = byte.Parse(Console.ReadLine());
-            }
+            byte age = CorrectNumber();
             Console.Write("У вас есть питомцы: ");
             bool haveapet;
-            string answer = Console.ReadLine();
-            if ((answer == "Да") || (answer == "ДА") || (answer == "да"))
-            {
-                haveapet = true;
-            }    
-            else
-            {
-                haveapet = false;
-            }
+            string answer = HaveaNumber();
+            haveapet = (((answer == "Да") || (answer == "ДА") || (answer == "да"))==true) ? haveapet = true: haveapet = false; // тернарный оператор
             byte howmanypets;
             if (haveapet == false)
             {
@@ -39,33 +33,35 @@ namespace Homework
             else
             {
                 Console.Write("Сколько у вас питомцев ");
-                howmanypets = byte.Parse(Console.ReadLine());
-                while (CorrectNumber(howmanypets) == false)
-                {
-                    howmanypets = byte.Parse(Console.ReadLine());
-                }    
+                howmanypets = CorrectNumber();
             }
             string[] pets = NamePets(howmanypets);
             Console.Write("Сколько у вас любимых цветов: ");
-            byte howmanycolors = byte.Parse(Console.ReadLine());
-            while (CorrectNumber(howmanycolors)== false)
-            { 
-                howmanycolors = byte.Parse(Console.ReadLine());
-            }
+            byte howmanycolors = CorrectNumber();
             string[] colors = YourFavColors(howmanycolors);
             return (name, surname, age, haveapet, howmanypets, howmanycolors, pets, colors);
 
         }
+        /// <summary>
+        /// Клички питомцев
+        /// </summary>
+        /// <param name="howmany"></param>
+        /// <returns></returns>
         static string[] NamePets(byte howmany)
         {
             string[] namepets = new string[howmany];
             for(int i=0; i<howmany; i++)
             {
-                Console.WriteLine("Как зовут вашего {0} питомца: ", i+1);
-                namepets[i] = Console.ReadLine();
+                Console.Write("Как зовут вашего {0} питомца: ", i+1);
+                namepets[i] = HaveaNumber();
             }
             return namepets;
         }
+        /// <summary>
+        /// Любиые цвета пользователя
+        /// </summary>
+        /// <param name="howmanycolors"></param>
+        /// <returns></returns>
         static string[] YourFavColors (byte howmanycolors)
         {
             string[] favcolors = new string[howmanycolors];
@@ -73,19 +69,29 @@ namespace Homework
             for (int j=0; j<howmanycolors; j++)
             {
                 Console.Write("Какой ваш любимый цвет {0}: ", j+1);
-                favcolors[j] = Console.ReadLine();
+                favcolors[j] = HaveaNumber();
             }
             return favcolors; 
         }
-        static bool CorrectNumber (byte somenumber)
+        /// <summary>
+        /// Метод проверяющий является ли ответ числом
+        /// </summary>
+        /// <returns></returns>
+        static byte CorrectNumber ()
         {
-            if (somenumber == 0)
+            bool iscorrect = false;
+            byte number = 0;
+            while (iscorrect == false)
             {
-                Console.WriteLine("вы вввели неверное число, повторите ввод ");
-                return false;
+                iscorrect = byte.TryParse(Console.ReadLine(), out number);
+                if (iscorrect == false || number == 0) Console.WriteLine("Введите пожалуйста число больше нуля");
             }
-            return true;
+            return number;
         }
+        /// <summary>
+        /// Метод выводящий информацию о пользователе
+        /// </summary>
+        /// <param name="user"></param>
         static void Answer((string, string, byte, bool, byte, byte, string[], string[]) user)
         {
             Console.Write("Ваше имя {0} ", user.Item1);
@@ -102,8 +108,9 @@ namespace Homework
                 {
                     Console.Write(e + ", ");
                 }
+                Console.WriteLine();
             }
-            Console.WriteLine("Ваши любимые цвета: ");
+                Console.Write("Ваши любимые цвета: ");
             foreach (var e in user.Item8)
             {
                 Console.Write(e + ", ");
@@ -114,5 +121,36 @@ namespace Homework
             Answer(TellAboutYourself());
             Console.ReadLine();
         }
+        /// <summary>
+        /// Дополнительный метод имеются ли цифры в имени
+        /// </summary>
+        /// <returns></returns>
+        static string HaveaNumber()
+        {
+            string answer="";
+            bool donthaveanumb = false;
+            while (donthaveanumb == false || answer.Length == 0)
+            {
+                string Nums = "1234567890";
+                answer = Console.ReadLine();
+                donthaveanumb = true;
+                for (int z = 0; z < answer.Length; z++)
+                {
+                    for (int z2 = 0; z2 < Nums.Length; z2++) 
+                    {
+                        if (answer[z] == Nums[z2])
+                        {
+                            donthaveanumb = false;
+                            Console.WriteLine("В ответе содержатся цифры, пожалуйста не используете цифры в ответе");
+                            break;
+                        }
+                    }
+                    if (donthaveanumb == false) break;
+                }
+                if (answer.Length == 0) Console.WriteLine("Ответ пустой пожалуйста введите символы");
+            }
+            return answer;
+        }
+        
     }
 }
